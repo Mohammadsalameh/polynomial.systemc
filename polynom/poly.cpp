@@ -15,9 +15,10 @@ double compute_poly(const unsigned int poly_degree_1,const double *poly_coeff_1,
 {
 	double Var1;//Var2;
     //sc_out<double> F;
-        for (int i=0 ;i<=poly_degree_1;i++)
+        Var1 = poly_coeff_1[0];
+        for (int i=1 ;i<=poly_degree_1;i++)
 	{
-        Var1+=poly_coeff_1[poly_degree_1 + 1]*x;
+        Var1+=poly_coeff_1[poly_degree_1]*x;
 	}
         //Var1=5*x;
 	//Var2=2*x*x;
