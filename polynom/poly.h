@@ -43,17 +43,7 @@ const double poly_coeff[poly_degree + 1] = {
 
 
 // TODO: define the functions you need for the module here
-double compute_poly(const unsigned int poly_degree_1,const double (&poly_coeff_1)[2],double x)
-{
-    double Var1;//Var2;
-        for (int i=0 ;i<=poly_degree_1;i++)
-    {
-        Var1+=poly_coeff_1[poly_degree_1 + 1]*x.read();
-    }
-
-
-    return Var1;
-}
+double compute_poly(const unsigned int,const double,double );
 
 /* TODO: define your Module here
 * The modules task is to calculate the function value of a fixed polynom (defined above) at a variable argument.
