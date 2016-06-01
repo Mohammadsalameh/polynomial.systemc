@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include "systemc.h"
-#include <poly.h>
+#include "poly.h"
 #include "stim_polynom.h"
 #include "mon_polynom.h"
 
@@ -28,6 +28,9 @@ int sc_main(int argc, char* argv[])
 // TODO: use your module here
 // Input  Signal: XSig
 // Output Signal: YSig
+  poly DUT("poly");
+  DUT.X(XSig);
+  DUT.Y(YSig);
 
   mon_polynom Monitor1("Monitor");
   Monitor1.X(XSig);			// Module Input X
