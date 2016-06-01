@@ -11,22 +11,19 @@
 #include "poly.h"
 
 // TODO: implement your function(s) for your Module here
-double compute_poly(const unsigned int poly_degree_1,const double *poly_coeff_1,double x)
+double compute_poly(/*const unsigned int poly_degree_1,const double *poly_coeff_1,*/double X)
 {
-	double Var1 , Var2=0;//Var2;
-        double Xip = 1;
-    //sc_out<double> F;
-        for (int i=0 ;i<=poly_degree_1;i++)
+    double Var1,Var2,Var3,Y;
+    double Xip = 1;
+
+        for (int i=0 ;i<poly_degree+1;i++)
 	{
-                Var1 = poly_coeff_1[poly_degree_1]*Xip;
-                Var2=x*Xip;
+                Var1 = poly_coeff[poly_degree]*Xip;
+                Var2=X*Xip;
                 Xip=Var2;
                 Var3=Y+Var1;
                 Y=Var3;
 	}
-        //Var1=5*x;
-	//Var2=2*x*x;
-	//double F=Var2-Var1+5;
-	
-    return Var2;
+
+    return Y;
 }
