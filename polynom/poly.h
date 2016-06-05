@@ -27,7 +27,6 @@ const double poly_coeff[poly_degree + 1] = {
 // more complex polynomial for extensive testing
 // configurable degree of polynomial
 const unsigned int poly_degree = 7;
-
 // configurable coefficients (index equal to associated power of x)
 const double poly_coeff[poly_degree + 1] = {
   8.34,
@@ -41,31 +40,31 @@ const double poly_coeff[poly_degree + 1] = {
 };
 */
 
+// evaluates a polynomial in position x, returns associated y value
+double polyEval(const double x);
 
-// TODO: define the functions you need for the module here
-double compute_poly(/*const unsigned int,const double*,*/double);
-
-/* TODO: define your Module here
-* The modules task is to calculate the function value of a fixed polynom (defined above) at a variable argument.
-* The argument is the input to the module and the function value is the ouput.
-* inputs and output type is double (see main.cpp)
-* 
-* Please use functions to keep this module definition as simple and small as possible.
-*/
-SC_MODULE(poly)
+SC_MODULE(ModPolyEval)
 {
-    sc_in<double> X;
-    sc_out<double> Y;
-    //F.write(double compute_poly(poly_degree,poly_coeff,x.read()));
-	void  do_poly()
-	{
-        Y.write(compute_poly(/*poly_degree,poly_coeff,*/X.read()));
-	}
-    SC_CTOR(poly)
-	{
-        	SC_METHOD(do_poly);
-            sensitive << X ;
-	}
-}
+
+  sc_in<double> X;
+  sc_out<double> Y;
+
+  SC_CTOR(ModPolyEval)
+  {
+    SC_METHOD(do_polyEval);
+    sensitive << X;
+  }
+
+  void do_polyEval()
+  {
+    Y.write( polyEval(X.read()) ); //Y = polyEval(X)
+  }
+
+
+};
+
 
 #endif // POLY_H
+
+
+
