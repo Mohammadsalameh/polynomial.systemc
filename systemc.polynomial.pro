@@ -14,7 +14,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp
-SOURCES += polynom/poly.cpp
+SOURCES +=
 SOURCES += polyInt.cpp
 SOURCES += polyInt_tb.cpp
 
