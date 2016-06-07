@@ -11,21 +11,22 @@
 #include "polyInt.h"
 
 int i;
-int num_split=1;
+int num_split=0;
 double num_boundary;
 double E ;
 double temp3[n];
-
+double length[n];
 double polyEval(double);
 
 
 double Split(double(&boundary_1)[n])
 {
     ++num_split;
-    for(int j=1 ; j<=i ; j++)
+    for(int j=0 ; j<num_split ; j++)
     {
-        boundary_1[i]=(boundary_1[i-1]+boundary_1[i-1])/2;
-        boundary_2[i]=(boundary_1[i-1]+boundary_2[i-1])/2;
+        double temp1=(boundary_1[j]+boundary_1[j+1])/2;
+        boundary_1[j+2]=boundary_1[j+1];
+        boundary_1[j+1]=temp1;
     }
 }
 
@@ -39,10 +40,10 @@ double Split(double(&boundary_1)[n])
 
 double Trapezoid(double (&boundary_1)[n])
 {
-    for(int i=0 ; i<num_split ; i++)
+    for(int i=0 ; i<=num_split ; i++)
     {
-        double length = boundary_1[i]-boundary_1[i-1];
-        double T = length*(polyEval(boundary_1[i])+polyEval(boundary_1[i-1]))/2;
+        length[i] = boundary_1[i+1]-boundary_1[i];
+        double T = length*(polyEval(boundary_1[i+1])+polyEval(boundary_1[i]))/2;
         return T;
     }
 }
@@ -75,16 +76,9 @@ double do_polyInt(double a , double b ,const poly_degree)//, double e)
 
     double boundary_1[n] ;
     //double boundary_2[n] ;
-    if (a<b)
-    {
     boundary_1[i-1]=a;
     boundary_1[i]=b;
-    }
-    else
-    {
-    boundary_1[i-1]=b;
-    boundary_1[i]=a;
-    }
+
     num_boundary=2;
     i=1;
     //boundary_2[0]=b;
