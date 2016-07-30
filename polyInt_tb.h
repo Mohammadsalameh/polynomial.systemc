@@ -12,5 +12,25 @@
 #include "systemc.h"
 
 // TODO: Define your Testbench Module here
+SC_MODULE(tb)
+{
+    //Reset Port
+//    sc_out<bool>reset;
+
+    //ports connected to input ports of the tested module
+    sc_out<double>A,B;
+    //ports connected to output ports of the tested module
+    sc_in<double>Result;
+    //communication & interface ports
+    sc_in<bool>finish;
+    sc_out<bool>start;
+
+    void TestBenchIntegral();
+    SC_CTOR(tb)
+    {
+        SC_METHOD(TestBenchIntegral);
+        sensitive << A << B << Result << finish ;
+    }
+}
 
 #endif // POLYINT_TB_H

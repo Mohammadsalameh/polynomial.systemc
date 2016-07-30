@@ -15,37 +15,88 @@
 #include "poly.h"
 
 // TODO: Define your module here
-double a,b,c,d,e;
-//double A=po.Y;
-//double B=p1.Y;
-//double C=p2.Y;
-//double D=p3.Y;
-//double Eo=p4.Y;
-const double E=0.1;
-const int n = 1000 ;
-double So[n],S1[n];//,poly_integral;
-bool Tolerance = false ;
-double Integral;
-//double c=(a+b)/2;
-//double d=(a+c)/2;
-//double e=(c+b)/2;
 
-//double a = 0;
-//double b = 2 ;
-SC_MODULE(poly_integeral)
+SC_MODULE(ModPolyIntegral)
 {
-    ModPolyEval po,p1;//,p2,p3,p4 ;
-    sc_in<double>Aint,Bint,PolyDegree;
+    //Rest port
+    sc_in<bool>reset;
+
+    //control signals
+    sc_in<bool>start;
+    sc_out<bool>finish;
+
+    //Input & Output ports
+    sc_in<double>A,B,PolyDegree;
     sc_out<double>ResultInt;
-    void do_PolyInt()
+
+    //Interface to evaluation integral module
+    sc_out<double> X;
+    sc_in<double> Y;
+
+    void do_polyIntegral();
+//    void do_PolyInt()
+//    {
+//        Yint.write(do_PolyInt(Aint.read(),Bint.read(),poly_degree));
+//    }
+
+    SC_CTOR(ModPolyIntegral)
     {
-        Yint.write(do_PolyInt(Aint.read(),Bint.read(),poly_degree));
-    }
-    SC_CTOR(do_PolyInt):
-        po("po"),p1("p1")//,p2("p2"),p3("p3"),p4("p4")
-    {
-        po.X(Aint);
-        p1.X(Bint);
+        SC_THREAD(do_polyIntegral);
+        sensitive/*<<A<<B*/<<Y<<start;
     }
 }
+//SC_MODULE(MidPoint)
+//{
+//    sc_in<double>X1;
+//    sc_in<double>X2;
+//    sc_out<double>Xmid;
+
+//    void MidEval()
+//    {
+//        Ymid.write((X1.read()+X2.read())/2);
+//    }
+//    SC_CTOR(MidPoint)
+//    {
+//        SC_METHOD(MidEval);
+//        sensitive << X1 << X2 ;
+//    }
+//}
+
+SC_MODULE(ModPolyInt)
+{
+    //sc_in<double>reset;
+    sc_in<double> A,B,Degree;
+    sc_out<double>Result;
+
+    //interface ports
+    sc_in<bool>start;
+    sc_out<bool>finish;
+
+    ModPolyEval P;
+    ModPolyIntegral I;
+
+    sc_signal<double> XSig;//in(x1)
+    sc_signal<double> YSig;//out(Y)
+
+    SC_CTOR(ModPolyInt):
+        P("P"),I("I")
+    {
+        P.X(XSig);
+        P.Y(YSig);
+
+        I.X(XSig);
+        I.Y(YSig);
+
+        //I.reset(reset);
+        I.start(start);
+        I.finish(finish);
+        I.A(A);
+        I.B(B);
+        I.PolyDegree(Degree);
+        I.ResultInt(Result);
+
+    }
+
+}
+
 #endif // POLYMOD_H

@@ -10,98 +10,113 @@
 #include "systemc.h"
 #include "polyInt.h"
 
-int i;
-int num_split=0;
-double num_boundary;
-double E ;
-double temp3[n];
-double length[n];
-double polyEval(double);
-
-
-double Split(double(&boundary_1)[n])
-{
-    ++num_split;
-    for(int j=0 ; j<num_split ; j++)
-    {
-        double temp1=(boundary_1[j]+boundary_1[j+1])/2;
-        boundary_1[j+2]=boundary_1[j+1];
-        boundary_1[j+1]=temp1;
-    }
-}
-
-//double Midpoint(double(&boundary_1)[n] , double(&boundary_1)[n])
-//{
-//    double length = boundary_1[i]-boundary_1[i];
-//    double Mid = (boundary_1[i]+boundary_2[i])/2;
-//    double M=length*polyEval(Mid);
-//    return M;
-//}
-
-double Trapezoid(double (&boundary_1)[n])
-{
-    for(int i=0 ; i<=num_split ; i++)
-    {
-        length[i] = boundary_1[i+1]-boundary_1[i];
-        double T = length*(polyEval(boundary_1[i+1])+polyEval(boundary_1[i]))/2;
-        return T;
-    }
-}
-
-double Quadrature(double (&boundary_1)[n])
-{
-    while (condition)
-    {
-        Split(boundary_1);
-        double First_iteration=Trapezoid(boundary_1);
-    }
-
-//    temp3[0]=0;
-//    double temp1 = (2/3)*Midpoint(boundary_1[i],boundary_1[i]);
-//    double temp2 = (1/3)*Trapezoid(boundary_1[i],boundary_1[i]);
-//    temp3[i]= temp1 + temp2 ;
-//    E=temp3[i]-temp3[i-1];
-//    if (E<=0.01 && E>=-0.01)
-//        return temp3[i];
-//    else
-//    {
-//        Split(boundary_1,boundary_1);
-//    }
-}
-
  //TODO: Place the implementation of your module here
 
-double do_polyInt(double a , double b ,const poly_degree)//, double e)
+void ModPolyIntegral::do_polyIntegral()
 {
+    //Rest the code
+    //Rest internal variable
+    //Rest outputs
+    ResultInt.write(0);
+    while (true)
+    {
+//        if(reset.read()==false)
+//        {
+        finish.write(false);
+        if (start.read()==true)
+        {
+            double bound_low=A.read() ;
+            double bound_high=B.read();
+            double low ;
+            double high;
+            double temp1,temp2,temp3;
+            double accu=0;
+            double pre_accu=0;
+            double mid;
 
-    double boundary_1[n] ;
-    //double boundary_2[n] ;
-    boundary_1[i-1]=a;
-    boundary_1[i]=b;
+            double sign=1;
+            double error=1;
 
-    num_boundary=2;
-    i=1;
-    //boundary_2[0]=b;
+            int k=0;
 
-    //Split(boundary_1,boundary_1);
 
-    if(poly_degree<2)
-        return Trapezoid(boundary_1);
-    else
-        return Quadrature(boundary_1);
+            if (bound_low<bound_high)
+            {
+                low=bound_low;
+                high=bound_high;
+                sign=1;
+            }
+            else
+            {
+                low=bound_high;
+                high=bound_low;
+                sign=-1;
+            }
 
-//    switch (poly_degree)
-//    {
-//    case 0 :
-//        return Midpoint(boundary_1[0] ,boundary_1[1]);
-//        break;
-//    case 1 :
-//        return Trapezoid(boundary_1[0],boundary_1[1]);
-//        break;
-//    case 2 :
-//        return Simpson(boundary_1[0],boundary_1[1]);
-//        break;
-//    default :
-//        break;
-//    }
+//        mid[0]=low;
+//        mid[1]=high;
+//        bound1.write(mid[0]);
+//        bound2.write(mid[2]);
+//        mid[1]=ResultMid.read();
+            double l=sign*(high-low);
+
+            //evaluation of the midpoint
+            mid=(low+high)/2;
+            X.write(mid);
+            wait();
+            temp3=Y.read();
+            //evaluation of low
+            X.write(low);
+            wait();
+            temp1=Y.read();
+            //evaluation of high
+            X.write(high);
+            wait();
+            temp2=Y.read();
+            double Midpoint=l*temp3;
+            double Trapezoid=(l/6)*(temp1+4*temp3+temp2);
+            switch(PolyDegree.read())
+            {
+                case 0:
+                ResultInt.write(Midpoint);
+                break;
+                case 1:
+                ResultInt.write(Midpoint);
+                break;
+                case 2:
+                ResultInt.write(Trapezoid);
+                break;
+                case 3 :
+                ResultInt.write(Trapezoid);
+                break;
+            }
+//                ++k;
+//                for(int i=0 ; i<k ; ++i )
+//                {
+//                    bound1.write(mid[k-i]);
+//                    bound2.write(mid[k-i-1]);
+//                    temp3=ResultMid.read();
+//                    for(int j=0 ; j<k-i ; ++j)
+//                    {
+//                        mid[k-j+1]=mid[k-j];
+//                    }
+//                    mid[i+1]=temp3;
+//                }
+//                for(int i=0 ; i<k ; ++i)
+//                {
+//                    X.write(mid[i+1]);
+//                    wait();
+//                    temp1=Y.read();
+
+//                    accu+=((mid[i+1]-mid[i])*temp1);
+//                }
+//                error=accu-pre_accu;
+//                pre_accu=accu;
+
+//        }
+//        else
+//            break;
+                finish.write(true);
+        }
+    }
 }
