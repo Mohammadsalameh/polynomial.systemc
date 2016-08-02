@@ -9,6 +9,7 @@
 
 #include "systemc.h"
 #include "polyInt.h"
+#include "ModuleIntegral.h"
 
  //TODO: Place the implementation of your module here
 
@@ -18,78 +19,76 @@ void ModPolyIntegral::do_polyIntegral()
     //Rest internal variable
     //Rest outputs
     ResultInt.write(0);
-    while (true)
+    wait();
+    while (start.read()==true)
     {
-//        if(reset.read()==false)
-//        {
         finish.write(false);
-        if (start.read()==true)
+        wait();
+        double bound_low=A.read() ;
+        wait();
+        double bound_high=B.read();
+        double low ;
+        double high;
+        double temp1,temp2,temp3;
+        double accu=0;
+        double pre_accu=0;
+        double mid;
+
+        double sign=1;
+        double error=1;
+
+        int k=0;
+
+
+        if (bound_low<bound_high)
         {
-            double bound_low=A.read() ;
-            double bound_high=B.read();
-            double low ;
-            double high;
-            double temp1,temp2,temp3;
-            double accu=0;
-            double pre_accu=0;
-            double mid;
+            low=bound_low;
+            high=bound_high;
+            sign=1;
+        }
+        else
+        {
+            low=bound_high;
+            high=bound_low;
+            sign=-1;
+        }
 
-            double sign=1;
-            double error=1;
+        double l=sign*(high-low);
 
-            int k=0;
-
-
-            if (bound_low<bound_high)
-            {
-                low=bound_low;
-                high=bound_high;
-                sign=1;
-            }
-            else
-            {
-                low=bound_high;
-                high=bound_low;
-                sign=-1;
-            }
-
-//        mid[0]=low;
-//        mid[1]=high;
-//        bound1.write(mid[0]);
-//        bound2.write(mid[2]);
-//        mid[1]=ResultMid.read();
-            double l=sign*(high-low);
-
-            //evaluation of the midpoint
-            mid=(low+high)/2;
-            X.write(mid);
+        //evaluation of the midpoint
+        mid=(low+high)/2;
+        X.write(mid);
+        wait();
+        temp3=Y.read();
+        //evaluation of low
+        X.write(low);
+        wait();
+        temp1=Y.read();
+        //evaluation of high
+        X.write(high);
+        wait();
+        temp2=Y.read();
+        double Midpoint=l*temp3;
+        double Trapezoid=(l/6)*(temp1+4*temp3+temp2);
+        switch(2)
+        {
+            case 0:
+            ResultInt.write(Midpoint);
             wait();
-            temp3=Y.read();
-            //evaluation of low
-            X.write(low);
+            break;
+            case 1:
+            ResultInt.write(Midpoint);
             wait();
-            temp1=Y.read();
-            //evaluation of high
-            X.write(high);
+            break;
+            case 2:
+            ResultInt.write(Trapezoid);
             wait();
-            temp2=Y.read();
-            double Midpoint=l*temp3;
-            double Trapezoid=(l/6)*(temp1+4*temp3+temp2);
-            switch(PolyDegree.read())
-            {
-                case 0:
-                ResultInt.write(Midpoint);
-                break;
-                case 1:
-                ResultInt.write(Midpoint);
-                break;
-                case 2:
-                ResultInt.write(Trapezoid);
-                break;
-                case 3 :
-                ResultInt.write(Trapezoid);
-                break;
-            }
+            break;
+            case 3 :
+            ResultInt.write(Trapezoid);
+            wait();
+            break;
+        }
 //                ++k;
 //                for(int i=0 ; i<k ; ++i )
 //                {
@@ -116,7 +115,7 @@ void ModPolyIntegral::do_polyIntegral()
 //        }
 //        else
 //            break;
-                finish.write(true);
-        }
+            finish.write(true);
+            wait();
     }
 }

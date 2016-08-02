@@ -15,12 +15,16 @@
 SC_MODULE(tb)
 {
     //Reset Port
-//    sc_out<bool>reset;
+    //sc_out<bool>reset;
+    //clock port
+    sc_in<bool>clk;
 
     //ports connected to input ports of the tested module
     sc_out<double>A,B;
+
     //ports connected to output ports of the tested module
     sc_in<double>Result;
+
     //communication & interface ports
     sc_in<bool>finish;
     sc_out<bool>start;
@@ -29,7 +33,7 @@ SC_MODULE(tb)
     SC_CTOR(tb)
     {
         SC_METHOD(TestBenchIntegral);
-        sensitive << A << B << Result << finish ;
+        sensitive << /*clk.pos()*/A << B << Result << finish ;
     }
 }
 

@@ -27,21 +27,24 @@ void tb::TestBenchIntegral()
     {
         start.write(true);
         wait();
+        start.write(false);
         A.write(i);
         wait();
         B.write(i+2);
         wait();
         Array[i]=Result.read();
+
+        if(finish.read()==true)
+        {
+            if (Array[i]==GoldenResult[i])
+                ++counter;
+        }
     }
-    for(int i=0 ; i<10 ; i+2)
-    {
-       if (Array[i]==GoldenResult[i])
-           ++counter;
-    }
-    if (counter==5)
-        cout<<"Testbench is correct"<<".\n";
+
+    if(counter==5)
+        std::cout<<"Testbench pass"<<".\n";
     else
-        cout<<"Testbench is wrong"<<".\n";
+        std::cout<<"Testbench faild"<<".\n";
 
     return 0;
 }

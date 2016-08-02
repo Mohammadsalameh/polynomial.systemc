@@ -16,17 +16,20 @@
 
 // TODO: Define your module here
 
-SC_MODULE(ModPolyIntegral)
+SC_MODULE (ModPolyIntegral)
 {
     //Rest port
     sc_in<bool>reset;
+
+    //clock port
+    sc_in<bool>clk;
 
     //control signals
     sc_in<bool>start;
     sc_out<bool>finish;
 
     //Input & Output ports
-    sc_in<double>A,B,PolyDegree;
+    sc_in<double>A,B/*,PolyDegree*/;
     sc_out<double>ResultInt;
 
     //Interface to evaluation integral module
@@ -34,38 +37,25 @@ SC_MODULE(ModPolyIntegral)
     sc_in<double> Y;
 
     void do_polyIntegral();
-//    void do_PolyInt()
-//    {
-//        Yint.write(do_PolyInt(Aint.read(),Bint.read(),poly_degree));
-//    }
+ //    void do_PolyInt()
+ //    {
+ //        Yint.write(do_PolyInt(Aint.read(),Bint.read(),poly_degree));
+ //    }
 
     SC_CTOR(ModPolyIntegral)
     {
         SC_THREAD(do_polyIntegral);
-        sensitive/*<<A<<B*/<<Y<<start;
+        sensitive<</*clk.pos()<<*/A<<B<<Y<<start;
     }
 }
-//SC_MODULE(MidPoint)
-//{
-//    sc_in<double>X1;
-//    sc_in<double>X2;
-//    sc_out<double>Xmid;
-
-//    void MidEval()
-//    {
-//        Ymid.write((X1.read()+X2.read())/2);
-//    }
-//    SC_CTOR(MidPoint)
-//    {
-//        SC_METHOD(MidEval);
-//        sensitive << X1 << X2 ;
-//    }
-//}
 
 SC_MODULE(ModPolyInt)
 {
+    //clock port
+    sc_in<bool>clk;
+
     //sc_in<double>reset;
-    sc_in<double> A,B,Degree;
+    sc_in<double> A,B/*Degree*/;
     sc_out<double>Result;
 
     //interface ports
@@ -88,13 +78,13 @@ SC_MODULE(ModPolyInt)
         I.Y(YSig);
 
         //I.reset(reset);
+        I.clk(clk);
         I.start(start);
         I.finish(finish);
         I.A(A);
         I.B(B);
-        I.PolyDegree(Degree);
+//        I.PolyDegree(Degree);
         I.ResultInt(Result);
-
     }
 
 }

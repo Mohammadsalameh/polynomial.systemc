@@ -8,10 +8,11 @@
 // Christian De Schryver <schryver@eit.uni-kl.de>
 // Markus Steffes <steffesm@rhrk.uni-kl.de>
 
+
 #include "polyInt.h"
 #include "polyInt_tb.h"
 
-using namespace std;
+//using namespace std;
 
 
 int sc_main(int argc, char* argv[])
@@ -24,6 +25,7 @@ int sc_main(int argc, char* argv[])
 
   // TODO insert your module here
   ModPolyInt DefInt("DefInt");
+  DefInt.clk(TestClk);
   DefInt.A(ASig);
   DefInt.B(BSig);
   DefInt.Result(ResSig);
@@ -31,6 +33,7 @@ int sc_main(int argc, char* argv[])
   DefInt.finish(FinishSig);
   // TODO insert your testbench here
   tb TestDefInt("TestDefInt");
+  TestDefInt.clk(TestClk);
   TestDefInt.A(ASig);
   TestDefInt.B(BSig);
   TestDefInt.Result(ResSig);
